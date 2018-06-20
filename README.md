@@ -11,6 +11,7 @@ Interact with the app using HTTP methods:
 
 SwaggerUI will provide more information if you run the app. See doc on [URL localhost:8080/doc](localhost:8080/doc) 
 while running the app.
+![SwaggerUI](/img/doc.png)
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development
