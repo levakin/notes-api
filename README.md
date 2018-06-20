@@ -92,10 +92,37 @@ $ flask reset
 ```
 
 
-## Deployment using Docker
+## Docker
 
 You can download docker image from the docker registry using the following command
-
+```
+$ docker pull levakin/notes-api
+```
+or you can build image yourself
+```
+$ docker build -t notes-api .
+```
+To run container named notes-container from image use the following command:
+ ```
+$ docker run -d --name notes-container -p 8080:8080 levakin/notes-api flask run
+```
+Server will be running on the [localhost:8080](localhost:8080)
+To execute commands in container:
+ ```
+$ docker exec notes-container COMMAND
+```
+Example:
+ ```
+$ docker exec notes-container flask reset
+```
+To stop container:
+ ```
+$ docker stop notes-container
+```
+To start container and server again:
+ ```
+$ docker start notes-container && docker exec notes-container flask run
+```
 ## Built With
 
 * [Flask](http://flask.pocoo.org/docs/1.0/) - Flask is a microframework for Python based on Werkzeug,
