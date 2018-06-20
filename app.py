@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import os
 import time
 import uuid
 
@@ -24,6 +25,9 @@ class Api(BaseApi):
     def base_path(self):
         return ''
 
+
+if not os.path.isdir('/tmp'):
+    os.mkdir('/tmp')
 
 app = Flask(__name__)
 app.wsgi_app = ProxyFix(app.wsgi_app)
