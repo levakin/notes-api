@@ -9,7 +9,8 @@ from marshmallow import ValidationError
 from werkzeug.contrib.fixers import ProxyFix
 
 import manage_db
-from database import init_db, Session, empty_db, Note, notes_schema, note_schema
+from database import init_db, Session, empty_db, Note
+from schemas import notes_schema, note_schema
 
 
 class Api(BaseApi):
@@ -39,20 +40,22 @@ api = Api(app, version='1.0',
           default_label="Notes operations"
           )
 
+init_db()
+
 note_post = api.model('post note', {
     'title': fields.String(example='title example'),
     'text': fields.String(example='text example')
 })
+
 note_update = api.model('update note', {
     'id': fields.String(example='91c947c7-3f24-47bc-b180-d36dadfaca1c'),
     'title': fields.String(example='title example'),
     'text': fields.String(example='text example')
 })
+
 note_delete = api.model('delete note', {
     'id': fields.String(example='91c947c7-3f24-47bc-b180-d36dadfaca1c')
 })
-
-init_db()
 
 
 @app.cli.command()
@@ -103,6 +106,8 @@ class NotesList(Resource):
         except ValidationError as err:
             return err.messages, 422
 
+        db_session = Session()
+
         # Create new note
         note = Note(id=str(uuid.uuid4()),
                     title=data.get('title'),
@@ -110,7 +115,6 @@ class NotesList(Resource):
                     date_create=int(time.time()),
                     date_update=int(time.time()))
 
-        db_session = Session()
         db_session.add(note)
         db_session.commit()
 
@@ -126,7 +130,6 @@ class NotesList(Resource):
     @api.response(422, 'Data not provided')
     @api.response(404, 'Note is not found')
     def put(self):
-        db_session = Session()
 
         json_data = request.get_json()
 
@@ -136,11 +139,13 @@ class NotesList(Resource):
         # Validate and deserialize input
         try:
             data, errors = note_schema.load(json_data)
-            if not (data.get('id') and (data.get('title') or data.get('text'))):
+            if not (data.get('text') and (data.get('title') or data.get('id'))):
                 raise ValidationError('Data not provided')
 
         except ValidationError as err:
             return err.messages, 422
+
+        db_session = Session()
 
         try:
             note = db_session.query(Note).filter(Note.id == data.get('id')).first()
