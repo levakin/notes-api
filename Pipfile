@@ -13,6 +13,7 @@ watchdog = "*"
 Werkzeug = "*"
 Flask = "*"
 SQLAlchemy = "*"
+sqlalchemy-utils = "*"
 
 [dev-packages]
 
