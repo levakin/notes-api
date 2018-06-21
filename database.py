@@ -43,6 +43,8 @@ def empty_db():
     """
     Empties a local database.
     """
-    if os.path.isfile('/tmp/notes.db'):
-        os.remove('/tmp/notes.db')
+
+    if os.path.exists(os.path.join(project_dir, "tmp/notes.db")):
+        os.remove(os.path.join(project_dir, "tmp/notes.db"))
+        print('database removed')
     init_db()
